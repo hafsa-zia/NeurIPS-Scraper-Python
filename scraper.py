@@ -9,14 +9,14 @@ THREAD_COUNT = 50
 MAX_RETRIES = 3
 TIMEOUT = 90
 BASE_URL = "https://papers.nips.cc"
-OUTPUT_DIR = "C:/Users/hafsa/Desktop/scraped2-pdfs/"
 
-# Create the output directory and metadata file if they don't exist
+# Get the Desktop path dynamically
+OUTPUT_DIR = os.path.join(os.path.expanduser("~"), "Desktop", "scraped3-pdfs")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+
 CSV_OUTPUT_PATH = os.path.join(OUTPUT_DIR, "metadata.csv")
 
 def create_metadata_file():
-    # Create CSV file and write headers if it doesn't exist
     if not os.path.exists(CSV_OUTPUT_PATH):
         with open(CSV_OUTPUT_PATH, mode="w", newline='', encoding="utf-8") as file:
             writer = csv.writer(file)
@@ -59,7 +59,6 @@ def process_paper(paper_url, writer):
                 download_pdf(pdf_url, sanitized_title)
                 download_timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
                 
-                # Write metadata to CSV
                 with open(CSV_OUTPUT_PATH, mode="a", newline='', encoding="utf-8") as file:
                     writer = csv.writer(file)
                     writer.writerow([paper_title, paper_url, pdf_url, download_timestamp])
@@ -86,7 +85,6 @@ def download_pdf(pdf_url, file_name):
     print(f"Saved PDF: {file_path}")
 
 def sanitize_filename(filename):
-    # Sanitize filename for invalid characters
     return filename.replace("\\", "_").replace("/", "_").replace(":", "_").replace("*", "_") \
                    .replace("?", "_").replace("\"", "_").replace("<", "_").replace(">", "_").replace("|", "_")
 
